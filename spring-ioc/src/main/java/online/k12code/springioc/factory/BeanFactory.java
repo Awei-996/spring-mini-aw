@@ -1,21 +1,21 @@
 package online.k12code.springioc.factory;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.beans.BeansException;
 
 /**
+ * bean容器
+ *
  * @author Carl
  * @since 1.0.0
  */
-public class BeanFactory {
+public interface BeanFactory {
 
-    private Map<String, Object> beanMap = new HashMap<>();
-
-    public Object getBean(String beanName) {
-        return beanMap.get(beanName);
-    }
-
-    public void registerBean(String beanName, Object bean) {
-        beanMap.put(beanName, bean);
-    }
+    /**
+     * 获取bean
+     *
+     * @param name 名称
+     * @return
+     * @throws BeansException bean不存在时
+     */
+    Object getBean(String name) throws BeansException;
 }

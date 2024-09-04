@@ -12,22 +12,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SimpleBeanContainerTest {
 
-    @Test
-    public void testGetBean() {
+//    @Test
+//    public void testGetBean() {
+//
+//        BeanFactory beanFactory = new BeanFactory();
+//
+//        beanFactory.registerBean("helloService", new HelloService());
+//
+//        HelloService helloService = (HelloService) beanFactory.getBean("helloService");
+//        assertThat(helloService).isNotNull();
+//        assertThat(helloService.sayHello()).isEqualTo("hello");
+//        System.out.println(helloService.sayHello());
+//    }
 
-        BeanFactory beanFactory = new BeanFactory();
-
-        beanFactory.registerBean("helloService", new HelloService());
-
-        HelloService helloService = (HelloService) beanFactory.getBean("helloService");
-        assertThat(helloService).isNotNull();
-        assertThat(helloService.sayHello()).isEqualTo("hello");
-        System.out.println(helloService.sayHello());
-    }
-
-    class HelloService {
-        public String sayHello() {
-            return "hello";
-        }
-    }
 }
