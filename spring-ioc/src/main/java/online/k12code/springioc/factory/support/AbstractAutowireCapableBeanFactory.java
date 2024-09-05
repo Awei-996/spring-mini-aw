@@ -3,6 +3,7 @@ package online.k12code.springioc.factory.support;
 import online.k12code.springioc.BeansException;
 import online.k12code.springioc.PropertyValue;
 import online.k12code.springioc.factory.config.BeanDefinition;
+import online.k12code.springioc.factory.config.BeanReference;
 import org.springframework.beans.BeanUtils;
 
 import java.lang.reflect.Field;
@@ -58,6 +59,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
             Object value = propertyValue.getValue();
             String name = propertyValue.getName();
+
+            if (value instanceof BeanReference) {
+                // beanA依赖beanB，先实例化beanB
+                value = getBean(((BeanReference) value).getBeanName());
+            }
 
             // 通过反射设置属性
             try {
