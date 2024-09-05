@@ -2,12 +2,17 @@ package online.k12code.springioc.factory.support;
 
 import online.k12code.springioc.BeansException;
 import online.k12code.springioc.factory.config.BeanDefinition;
+import org.springframework.beans.factory.support.InstantiationStrategy;
+import org.springframework.beans.factory.support.SimpleInstantiationStrategy;
 
 /**
  * @author Carl
  * @since 1.0.0
  */
 public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory {
+
+    private InstantiationStrategy instantiationStrategy = new SimpleInstantiationStrategy();
+
 
     @Override
     protected Object createBean(String beanName, BeanDefinition beanDefinition) throws BeansException {
@@ -30,4 +35,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         return bean;
     }
 
+    public InstantiationStrategy getInstantiationStrategy() {
+        return instantiationStrategy;
+    }
+
+    public void setInstantiationStrategy(InstantiationStrategy instantiationStrategy) {
+        this.instantiationStrategy = instantiationStrategy;
+    }
 }
