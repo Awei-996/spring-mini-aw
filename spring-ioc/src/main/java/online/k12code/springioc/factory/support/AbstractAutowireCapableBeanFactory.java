@@ -2,8 +2,6 @@ package online.k12code.springioc.factory.support;
 
 import online.k12code.springioc.BeansException;
 import online.k12code.springioc.factory.config.BeanDefinition;
-import org.springframework.beans.factory.support.InstantiationStrategy;
-import org.springframework.beans.factory.support.SimpleInstantiationStrategy;
 
 /**
  * @author Carl
@@ -20,19 +18,25 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     }
 
     protected Object doCreateBean(String beanName, BeanDefinition beanDefinition) {
-
-        Class<?> beanClass = beanDefinition.getBeanClass();
-
         Object bean = null;
         try {
             // 获取实例化
-            bean = beanClass.newInstance();
+            bean = createBeanInstance(beanDefinition);
         } catch (Exception e) {
             throw new BeansException("Instantiation of bean failed", e);
         }
         // 将新创建bean添加单例中
         addSingleton(beanName, bean);
         return bean;
+    }
+
+    /**
+     *  使用策略实例化
+     * @param beanDefinition
+     * @return
+     */
+    protected Object createBeanInstance(BeanDefinition beanDefinition) {
+        return getInstantiationStrategy().instantiate(beanDefinition);
     }
 
     public InstantiationStrategy getInstantiationStrategy() {
