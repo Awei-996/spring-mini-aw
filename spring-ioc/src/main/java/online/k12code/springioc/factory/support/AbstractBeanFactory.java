@@ -3,6 +3,11 @@ package online.k12code.springioc.factory.support;
 import online.k12code.springioc.BeansException;
 import online.k12code.springioc.factory.BeanFactory;
 import online.k12code.springioc.factory.config.BeanDefinition;
+import online.k12code.springioc.factory.config.BeanPostProcessor;
+import online.k12code.springioc.factory.config.ConfigurableBeanFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 抽象的bean工厂
@@ -10,7 +15,10 @@ import online.k12code.springioc.factory.config.BeanDefinition;
  * @author Carl
  * @since 1.0.0
  */
-public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory {
+public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory, ConfigurableBeanFactory {
+
+    private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
+
 
     /**
      * 创建bean
@@ -42,5 +50,12 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
         // 如果单例中没有bean，就获取对应的beanDefinition，来创建一个bean
         BeanDefinition beanDefinition = getBeanDefinition(name);
         return createBean(name, beanDefinition);
+    }
+
+    @Override
+    public void addBeanPostProcessor(BeanPostProcessor beanPostProcessor) {
+        //有则覆盖
+        this.beanPostProcessors.remove(beanPostProcessor);
+        this.beanPostProcessors.add(beanPostProcessor);
     }
 }

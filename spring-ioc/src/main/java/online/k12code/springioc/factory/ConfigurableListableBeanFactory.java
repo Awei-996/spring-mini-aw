@@ -1,10 +1,11 @@
 package online.k12code.springioc.factory;
 
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.ListableBeanFactory;
-import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+
+import online.k12code.springioc.BeansException;
+import online.k12code.springioc.factory.config.AutowireCapableBeanFactory;
+import online.k12code.springioc.factory.config.BeanDefinition;
+import online.k12code.springioc.factory.config.BeanPostProcessor;
+import online.k12code.springioc.factory.config.ConfigurableBeanFactory;
 
 /**
  * @author Carl
@@ -17,7 +18,16 @@ public interface ConfigurableListableBeanFactory extends ListableBeanFactory, Au
      *
      * @param beanName
      * @return
-     * @throws BeansException 如果找不到BeanDefintion
+     * @throws
      */
     BeanDefinition getBeanDefinition(String beanName) throws BeansException;
+
+    /**
+     * 提前实例化所有单例实例
+     *
+     * @throws org.springframework.beans.BeansException
+     */
+    void preInstantiateSingletons() throws BeansException;
+
+    void addBeanPostProcessor(BeanPostProcessor beanPostProcessor);
 }

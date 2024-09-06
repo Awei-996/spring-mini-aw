@@ -1,7 +1,9 @@
 package online.k12code.springioc.factory.config;
 
-import org.springframework.beans.factory.HierarchicalBeanFactory;
-import org.springframework.beans.factory.config.SingletonBeanRegistry;
+
+import online.k12code.springioc.BeansException;
+import online.k12code.springioc.factory.HierarchicalBeanFactory;
+
 
 /**
  * @author Carl
@@ -9,4 +11,5 @@ import org.springframework.beans.factory.config.SingletonBeanRegistry;
  */
 public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, SingletonBeanRegistry {
 
+    void addBeanPostProcessor(BeanPostProcessor beanPostProcessor);
 }
