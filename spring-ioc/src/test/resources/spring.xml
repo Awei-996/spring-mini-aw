@@ -15,4 +15,8 @@
     <bean id="car" class="online.k12code.springioc.bean.Car">
         <property name="brand" value="porsche"/>
     </bean>
+
+    <bean class="online.k12code.springioc.common.CustomBeanFactoryPostProcessor"/>
+
+    <bean class="online.k12code.springioc.common.CustomerBeanPostProcessor"/>
 </beans>

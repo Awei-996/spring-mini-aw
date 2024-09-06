@@ -18,7 +18,7 @@ public interface BeanPostProcessor {
      * @return
      * @throws BeansException
      */
-    Object postProcessorBeforeInitialization(Object bean, String beanName) throws BeansException;
+    Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException;
 
 
     /**
@@ -29,5 +29,5 @@ public interface BeanPostProcessor {
      * @return
      * @throws BeansException
      */
-    Object postProcessorAfterInitialization(Object bean, String beanName) throws BeansException;
+    Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException;
 }

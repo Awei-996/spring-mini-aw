@@ -45,8 +45,8 @@ public class BeanFactoryPostProcessorAndBeanPostProcessorTest {
 
         Car car = (Car) beanFactory.getBean("car");
         System.out.println(car);
-        //brand属性在CustomerBeanPostProcessor中被修改为porsche
-        assertThat(car.getBrand()).isEqualTo("porsche");
+        //brand属性在CustomerBeanPostProcessor中被修改为mini
+        assertThat(car.getBrand()).isEqualTo("mini");
     }
 
 }

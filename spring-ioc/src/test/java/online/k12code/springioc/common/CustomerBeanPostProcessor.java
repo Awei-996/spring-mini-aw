@@ -10,7 +10,7 @@ import online.k12code.springioc.factory.config.BeanPostProcessor;
  */
 public class CustomerBeanPostProcessor implements BeanPostProcessor {
     @Override
-    public Object postProcessorBeforeInitialization(Object bean, String beanName) throws BeansException {
+    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
         System.err.println("before");
         if ("car".equals(beanName)){
             ( (Car) bean).setBrand("mini");
@@ -19,7 +19,7 @@ public class CustomerBeanPostProcessor implements BeanPostProcessor {
     }
 
     @Override
-    public Object postProcessorAfterInitialization(Object bean, String beanName) throws BeansException {
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         System.err.println("after");
         return bean;
     }
