@@ -32,7 +32,7 @@ public class BeanDefinition {
         this.beanClass = beanClass;
     }
 
-    public PropertyValues getPropertyValue() {
+    public PropertyValues getPropertyValues() {
         return propertyValues;
     }
 
