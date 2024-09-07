@@ -59,6 +59,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
 
     /**
      * 注册BeanPostProcessor
+     *
      * @param beanFactory
      */
     protected void registerBeanPostProcessors(ConfigurableListableBeanFactory beanFactory) {
@@ -86,4 +87,20 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
         return getBeanFactory().getBeanDefinitionNames();
     }
 
+    public void registerShutdownHook() {
+        Thread shutdownHook = new Thread(this::doClose);
+        Runtime.getRuntime().addShutdownHook(shutdownHook);
+    }
+
+    public void close() {
+        doClose();
+    }
+
+    protected void doClose() {
+        destroyBeans();
+    }
+
+    protected void destroyBeans() {
+        getBeanFactory().destroySingletons();
+    }
 }
