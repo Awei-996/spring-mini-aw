@@ -36,6 +36,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
     public static final String REF_ATTRIBUTE = "ref";
     public static final String INIT_METHOD_ATTRIBUTE ="init-method";
     public static final String DESTROY_METHOD_ATTRIBUTE ="destroy-method";
+    public static final String SCOPE_ATTRIBUTE ="scope";
 
     public XmlBeanDefinitionReader(BeanDefinitionRegistry registry) {
         super(registry);
@@ -76,6 +77,8 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
                     String className = bean.getAttribute(CLASS_ATTRIBUTE);
                     String initMethodName = bean.getAttribute(INIT_METHOD_ATTRIBUTE);
                     String destroyMethodName = bean.getAttribute(DESTROY_METHOD_ATTRIBUTE);
+                    String beanScope = bean.getAttribute(SCOPE_ATTRIBUTE);
+
                     Class<?> clazz = null;
                     try {
                         clazz = Class.forName(className);
@@ -92,6 +95,10 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
                     BeanDefinition beanDefinition = new BeanDefinition(clazz);
                     beanDefinition.setInitMethodName(initMethodName);
                     beanDefinition.setDestroyMethodName(destroyMethodName);
+                    if (StrUtil.isNotBlank(beanScope)) {
+                        beanDefinition.setScope(beanScope);
+                    }
+
                     for (int j = 0; j < bean.getChildNodes().getLength(); j++) {
                         if (bean.getChildNodes().item(j) instanceof Element) {
                             if (PROPERTY_ELEMENT.equals(((Element) bean.getChildNodes().item(j)).getNodeName())) {
