@@ -19,4 +19,6 @@
     <bean class="online.k12code.springioc.common.CustomBeanFactoryPostProcessor"/>
 
     <bean class="online.k12code.springioc.common.CustomerBeanPostProcessor"/>
+
+    <bean id="Hi" class="online.k12code.springioc.factory.HiService"/>
 </beans>

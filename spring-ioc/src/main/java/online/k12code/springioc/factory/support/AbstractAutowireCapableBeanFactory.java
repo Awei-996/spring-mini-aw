@@ -3,6 +3,9 @@ package online.k12code.springioc.factory.support;
 import cn.hutool.core.util.ClassUtil;
 import online.k12code.springioc.BeansException;
 import online.k12code.springioc.PropertyValue;
+import online.k12code.springioc.context.ApplicationContextAware;
+import online.k12code.springioc.factory.BeanFactory;
+import online.k12code.springioc.factory.BeanFactoryAware;
 import online.k12code.springioc.factory.DisposableBean;
 import online.k12code.springioc.factory.InitializingBean;
 import online.k12code.springioc.factory.config.AutowireCapableBeanFactory;
@@ -111,6 +114,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     }
 
     protected Object initializeBean(String beanName, Object bean, BeanDefinition beanDefinition) {
+
+        if (bean instanceof BeanFactoryAware) {
+            ((BeanFactoryAware) bean).setBeanFactory(this);
+        }
 
         // 指定BeanPostProcessor的前置处理
         Object wrappedBean = applyBeanPostProcessorsBeforeInitialization(bean, beanName);
