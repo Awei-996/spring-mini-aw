@@ -15,4 +15,6 @@ public interface SingletonBeanRegistry {
      * @return 实体
      */
     Object getSingleton(String beanName);
+
+    void addSingleton(String beanName, Object singleonObject);
 }

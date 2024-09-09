@@ -9,5 +9,5 @@ import online.k12code.springioc.factory.ListableBeanFactory;
  * @author Carl
  * @since 1.0.0
  */
-public interface ApplicationContext extends ListableBeanFactory, HierarchicalBeanFactory, ResourceLoader {
+public interface ApplicationContext extends ListableBeanFactory, HierarchicalBeanFactory, ResourceLoader, ApplicationEventPublisher {
 }
