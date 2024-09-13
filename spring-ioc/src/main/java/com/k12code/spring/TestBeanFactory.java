@@ -50,7 +50,7 @@ public class TestBeanFactory {
         beanFactory.getBeansOfType(BeanFactoryPostProcessor.class).values().stream().forEach(beanFactoryPostProcessor -> {
             // 通过打印我们可以看到只有 ConfigurationClassPostProcessor、EventListenerMethodProcessor这两个是beanFactory的后置处理器
             // ConfigurationClassPostProcessor 他会解析类里面@Bean 注解
-            System.err.println(beanFactoryPostProcessor);
+//            System.err.println(beanFactoryPostProcessor);
             // 执行后置处理器
             beanFactoryPostProcessor.postProcessBeanFactory(beanFactory);
         });
@@ -61,7 +61,10 @@ public class TestBeanFactory {
         // 现在在B类里面注入了一个A,但是他并没有获取到，此时我们需要加BeanPostProcessor后置处理器，该处理器是在实例化之后，初始化之前执行的
         // 因为我们刚才在BeanDefinition中了多个，其中AutowiredAnnotationProcessor这个就是解析@Autowired的BeanPostProcessor后置处理器
         beanFactory.getBeansOfType(BeanPostProcessor.class).values().forEach(beanFactory::addBeanPostProcessor);
-        //
+        // 我们可以在使用之前把所有的bean都初始化了
+        beanFactory.preInstantiateSingletons();
+        System.err.println(">>>>>>>>>>>>>>>>>");
+        // 我们只有真正在过去bean的时候他才会进行初始化，原来之后把他放在beanDefinition中
         B bean = beanFactory.getBean(B.class);
         System.err.println(bean.getName());
         System.err.println(bean.getA());
