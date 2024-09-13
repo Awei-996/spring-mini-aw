@@ -9,10 +9,15 @@ import org.springframework.stereotype.Component;
  * @since 1.0.0
  */
 @Component
-public class C1 {
+public class C2 {
 
+    /**
+     * @EventListener 用于监听事件，参数必须是和发送的是一个事件
+     *
+     * @param registerEvent
+     */
     @EventListener
     public void c2(UserRegisterEvent registerEvent) {
-        System.err.println(registerEvent.name + ":发邮箱验证");
+        System.err.println(registerEvent.name + ":发短信验证");
     }
 }

@@ -1,5 +1,7 @@
 package com.k12code.spring;
 
+import com.k12code.spring.component.C3;
+import com.k12code.spring.event.UserRegisterEvent;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.DefaultSingletonBeanRegistry;
 import org.springframework.boot.SpringApplication;
@@ -23,7 +25,8 @@ public class Application {
 
 //       getMessage();
 //        getResource();
-        getEnv();
+//        getEnv();
+        getEvent();
     }
 
     /**
@@ -90,5 +93,14 @@ public class Application {
         String javaHome = environment.getProperty("java_home");
         System.err.println(port);
         System.err.println(javaHome);
+    }
+
+    private static void getEvent(){
+        // 第一种方式
+        ConfigurableApplicationContext applicationContext = SpringApplication.run(Application.class);
+//        applicationContext.publishEvent(new UserRegisterEvent(applicationContext,"aw"));
+        // 第二种方式
+        C3 bean = applicationContext.getBean(C3.class);
+        bean.c3();
     }
 }
