@@ -22,7 +22,8 @@ public class Application {
     public static void main(String[] args) throws Exception {
 
 //       getMessage();
-        getResource();
+//        getResource();
+        getEnv();
     }
 
     /**
@@ -75,5 +76,19 @@ public class Application {
         for (Resource resource2 : resources) {
             System.err.println(resource2);
         }
+    }
+
+    /**
+     * 获取环境变量参数
+     */
+    private static void getEnv(){
+        ConfigurableApplicationContext applicationContext = SpringApplication.run(Application.class);
+        ConfigurableEnvironment environment = applicationContext.getEnvironment();
+        // 可以获取yml中配置，也可以获取启动时添加的参数
+        String port = environment.getProperty("server.port");
+        // 获取JVM中的环境变量
+        String javaHome = environment.getProperty("java_home");
+        System.err.println(port);
+        System.err.println(javaHome);
     }
 }
