@@ -5,7 +5,10 @@ import org.springframework.beans.factory.support.DefaultSingletonBeanRegistry;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.io.Resource;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Locale;
 import java.util.Map;
@@ -18,7 +21,8 @@ import java.util.Map;
 public class Application {
     public static void main(String[] args) throws Exception {
 
-       getMessage();
+//       getMessage();
+        getResource();
     }
 
     /**
@@ -52,5 +56,24 @@ public class Application {
         System.err.println(h2);
         System.err.println(h3);
         System.err.println(h4);
+    }
+
+    /**
+     * 获取资源
+     * @throws IOException
+     */
+    private static void getResource() throws IOException {
+        ConfigurableApplicationContext applicationContext = SpringApplication.run(Application.class);
+        // 在本项目的类路径下进行匹配
+        Resource resource = applicationContext.getResource("classpath:application.properties");
+        // 在本地磁盘进行匹配
+        Resource resource1 = applicationContext.getResource("file:E:\\Spring\\spring-mini-aw\\spring-ioc\\src\\main\\resources\\a.txt");
+        // 在jar包文件中匹配
+        Resource[] resources = applicationContext.getResources("classpath*:META-INF/spring.factories");
+        System.err.println(resources.getClass());
+        System.err.println(resource1);
+        for (Resource resource2 : resources) {
+            System.err.println(resource2);
+        }
     }
 }
