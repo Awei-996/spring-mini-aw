@@ -4,6 +4,7 @@ import com.k12code.spring.component.LifecycleComponent;
 import com.k12code.spring.component.MyBeanPostProcessor;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.beans.factory.config.EmbeddedValueResolver;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
@@ -12,6 +13,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigUtils;
+import org.springframework.context.annotation.ContextAnnotationAutowireCandidateResolver;
+import org.springframework.core.env.StandardEnvironment;
 
 /**
  * @author Carl
@@ -30,6 +33,8 @@ public class LifecycleApplication {
 
         beanFactory.registerBeanDefinition("lifecycleComponent",singleton);
         beanFactory.registerBeanDefinition("myBeanPostProcessor",singleton2);
+        // 添加${}的解析器
+        beanFactory.addEmbeddedValueResolver(new StandardEnvironment()::resolvePlaceholders);
 
         // 注册后置处理器
         AnnotationConfigUtils.registerAnnotationConfigProcessors(beanFactory);
