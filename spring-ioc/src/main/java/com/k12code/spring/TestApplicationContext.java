@@ -1,9 +1,11 @@
 package com.k12code.spring;
 
 
-
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
@@ -16,6 +18,11 @@ public class TestApplicationContext {
 //        classXml();
 //        fileXml();
 // ========== xml注入实现的原理 ==========
+//        classFileXml();
+// ======== 使用@Configuration来实现bean的注入 =========
+//        annotationConfig();
+    }
+    public static void classFileXml(){
         // 首先还是创建一个容器
         DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
         // 将容器放入beanDefinition读取中
@@ -41,6 +48,31 @@ public class TestApplicationContext {
         for (String beanDefinitionName : applicationContext.getBeanDefinitionNames()) {
             System.err.println(beanDefinitionName);
         }
+    }
+
+    public static void annotationConfig(){
+        AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(Ac12.class);
+        // 打印的时候我们可以看到，他会默认的已经给我们添加上了一些后置处理器
+        for (String beanDefinitionName : applicationContext.getBeanDefinitionNames()) {
+            System.err.println(beanDefinitionName);
+        }
+
+    }
+}
+
+@Configuration
+class Ac12 {
+
+    @Bean
+    public Ac2 ac2() {
+        return new Ac2();
+    }
+
+    @Bean
+    public Ac1 ac1(Ac2 ac2){
+        Ac1 ac1 = new Ac1();
+        ac1.setAc2(ac2);
+        return ac1;
     }
 }
 
