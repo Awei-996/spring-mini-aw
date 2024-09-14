@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="ac2" class="com.k12code.spring.Ac2">
+        <property name="name"   value="aw"/>
+    </bean>
+    <bean id="ac1" class="com.k12code.spring.Ac1">
+        <property name="ac2" ref="ac2"/>
+    </bean>
+</beans>
