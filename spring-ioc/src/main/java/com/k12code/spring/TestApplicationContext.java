@@ -3,11 +3,22 @@ package com.k12code.spring;
 
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
+import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletRegistrationBean;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext;
+import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 
 /**
  * @author Carl
@@ -21,8 +32,11 @@ public class TestApplicationContext {
 //        classFileXml();
 // ======== 使用@Configuration来实现bean的注入 =========
 //        annotationConfig();
+// ======== web来实现bean的注入 =========
+        webServlet();
     }
-    public static void classFileXml(){
+
+    public static void classFileXml() {
         // 首先还是创建一个容器
         DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
         // 将容器放入beanDefinition读取中
@@ -50,7 +64,7 @@ public class TestApplicationContext {
         }
     }
 
-    public static void annotationConfig(){
+    public static void annotationConfig() {
         AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(Ac12.class);
         // 打印的时候我们可以看到，他会默认的已经给我们添加上了一些后置处理器
         for (String beanDefinitionName : applicationContext.getBeanDefinitionNames()) {
@@ -58,6 +72,12 @@ public class TestApplicationContext {
         }
 
     }
+
+    public static void webServlet() {
+        AnnotationConfigServletWebServerApplicationContext applicationContext = new AnnotationConfigServletWebServerApplicationContext(WebConfig.class);
+
+    }
+
 }
 
 @Configuration
@@ -69,7 +89,7 @@ class Ac12 {
     }
 
     @Bean
-    public Ac1 ac1(Ac2 ac2){
+    public Ac1 ac1(Ac2 ac2) {
         Ac1 ac1 = new Ac1();
         ac1.setAc2(ac2);
         return ac1;
@@ -98,5 +118,49 @@ class Ac2 {
 
     public void setName(String name) {
         this.name = name;
+    }
+}
+
+@Configuration
+class WebConfig {
+    /**
+     * 注入一个tomcat容器
+     *
+     * @return
+     */
+    @Bean
+    public ServletWebServerFactory servletWebServerFactory() {
+        return new TomcatServletWebServerFactory();
+    }
+
+    /**
+     * 注入Dispatcher
+     * @return
+     */
+    @Bean
+    public DispatcherServlet dispatcherServlet() {
+        return new DispatcherServlet();
+    }
+
+    /**
+     * 注册访问路径
+     * @param dispatcherServlet
+     * @return
+     */
+    @Bean
+    public DispatcherServletRegistrationBean dispatcherServletRegistrationBean(DispatcherServlet dispatcherServlet) {
+        return new DispatcherServletRegistrationBean(dispatcherServlet, "/");
+    }
+
+    /**
+     * 手动注入Controller，/会被解析成路径
+     * @return
+     */
+    @Bean("/hello")
+    public Controller controller1() {
+        return (request, response) -> {
+            response.getWriter().print("hello");
+            return null;
+        };
     }
 }
