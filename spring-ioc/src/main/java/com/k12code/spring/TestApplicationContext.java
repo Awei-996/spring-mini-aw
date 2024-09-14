@@ -10,14 +10,11 @@ import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -135,6 +132,7 @@ class WebConfig {
 
     /**
      * 注入Dispatcher
+     *
      * @return
      */
     @Bean
@@ -144,9 +142,11 @@ class WebConfig {
 
     /**
      * 注册访问路径
+     *
      * @param dispatcherServlet
      * @return
      */
+    @Primary
     @Bean
     public DispatcherServletRegistrationBean dispatcherServletRegistrationBean(DispatcherServlet dispatcherServlet) {
         return new DispatcherServletRegistrationBean(dispatcherServlet, "/");
@@ -154,6 +154,7 @@ class WebConfig {
 
     /**
      * 手动注入Controller，/会被解析成路径
+     *
      * @return
      */
     @Bean("/hello")
