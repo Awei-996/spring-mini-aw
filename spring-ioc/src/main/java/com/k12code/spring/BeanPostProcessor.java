@@ -4,11 +4,22 @@ import com.k12code.spring.component.Bean1;
 import com.k12code.spring.component.Bean2;
 import com.k12code.spring.component.Bean3;
 import com.k12code.spring.component.Properties;
+import org.springframework.beans.MutablePropertyValues;
+import org.springframework.beans.PropertyValue;
+import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
+import org.springframework.beans.factory.annotation.InjectionMetadata;
+import org.springframework.beans.factory.config.DependencyDescriptor;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor;
 import org.springframework.context.annotation.CommonAnnotationBeanPostProcessor;
 import org.springframework.context.annotation.ContextAnnotationAutowireCandidateResolver;
 import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.core.env.StandardEnvironment;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * @author Carl
@@ -16,8 +27,9 @@ import org.springframework.context.support.GenericApplicationContext;
  */
 public class BeanPostProcessor {
 
-    public static void main(String[] args) {
-    t1();
+    public static void main(String[] args) throws Throwable {
+//    t1();
+        t2();
     }
 
     public static void t1(){
@@ -49,5 +61,40 @@ public class BeanPostProcessor {
 
         // 销毁
         applicationContext.close();
+    }
+
+    public static void t2() throws Throwable {
+        // 详细解释 AutowiredAnnotationBeanPostProcessor后置处理器
+
+        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
+        // registerSingleton 这个方法也可以注册bean，只不过他没有创建过程，依赖注入，初始化
+        beanFactory.registerSingleton("bean2",new Bean2());
+        beanFactory.registerSingleton("bean3",new Bean3());
+        // @Value解析器
+        beanFactory.setAutowireCandidateResolver(new ContextAnnotationAutowireCandidateResolver());
+        beanFactory.addEmbeddedValueResolver(new StandardEnvironment()::resolvePlaceholders);
+
+        // 1.查找那些属性、方法加了 @Autowired，这称之为InjectionMetadata
+        AutowiredAnnotationBeanPostProcessor beanPostProcessor = new AutowiredAnnotationBeanPostProcessor();
+        beanPostProcessor.setBeanFactory(beanFactory);
+
+        Bean1 bean1 = new Bean1();
+        // 执行依赖注入，实质是执行@Autowire @Value注解
+//        beanPostProcessor.postProcessProperties(null,bean1,"bean1");
+//        System.err.println(bean1);
+
+        Method findAutowiringMetadata = AutowiredAnnotationBeanPostProcessor.class.getDeclaredMethod("findAutowiringMetadata", String.class, Class.class, PropertyValues.class);
+        findAutowiringMetadata.setAccessible(true);
+        InjectionMetadata injectionMetadata = (InjectionMetadata) findAutowiringMetadata.invoke(beanPostProcessor, "bean1", Bean1.class, null);
+        System.err.println(injectionMetadata);
+
+        // 2.调用InjectionMetadata 来进行依赖注入，注入时按类型查找值
+        injectionMetadata.inject(bean1,"bean1",null);
+        System.err.println(bean1);
+        // 3.按类型查找
+        Field bean3 = Bean1.class.getDeclaredField("bean3");
+        DependencyDescriptor dependencyDescriptor = new DependencyDescriptor(bean3, false);
+        Object o = beanFactory.doResolveDependency(dependencyDescriptor, null, null, null);
+        System.err.println(o);
     }
 }

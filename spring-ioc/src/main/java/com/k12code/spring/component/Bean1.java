@@ -25,6 +25,7 @@ public class Bean1 {
         this.bean2 = bean2;
     }
 
+    @Autowired
     private Bean3 bean3;
 
     @Resource
@@ -50,5 +51,14 @@ public class Bean1 {
     @PreDestroy
     private void destroy(){
         log.info("销毁方法");
+    }
+
+    @Override
+    public String toString() {
+        return "Bean1{" +
+                "bean2=" + bean2 +
+                ", bean3=" + bean3 +
+                ", home='" + home + '\'' +
+                '}';
     }
 }
