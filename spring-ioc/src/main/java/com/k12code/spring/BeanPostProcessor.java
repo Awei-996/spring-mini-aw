@@ -3,7 +3,9 @@ package com.k12code.spring;
 import com.k12code.spring.component.Bean1;
 import com.k12code.spring.component.Bean2;
 import com.k12code.spring.component.Bean3;
+import com.k12code.spring.component.Properties;
 import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
+import org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor;
 import org.springframework.context.annotation.CommonAnnotationBeanPostProcessor;
 import org.springframework.context.annotation.ContextAnnotationAutowireCandidateResolver;
 import org.springframework.context.support.GenericApplicationContext;
@@ -25,6 +27,7 @@ public class BeanPostProcessor {
         applicationContext.registerBean("bean1", Bean1.class);
         applicationContext.registerBean("bean2", Bean2.class);
         applicationContext.registerBean("bean3", Bean3.class);
+        applicationContext.registerBean("properties", Properties.class);
 
         //========== 添加后置处理器 ============
             // 通过添加后置处理器我们发现@Resource注解要比@Autowired先执行，那是因为Common后置处理器的执行顺序大于Autowired common的值小
@@ -35,9 +38,14 @@ public class BeanPostProcessor {
         // CommonAnnotationBeanPostProcessor 这个后置处理可以解析 @Resource、@PostConstruct、@PreDestroy
         applicationContext.registerBean(CommonAnnotationBeanPostProcessor.class);
 
+        // 添加Properties后置处理器
+        ConfigurationPropertiesBindingPostProcessor.register(applicationContext.getDefaultListableBeanFactory());
 
         // 初始化容器 执行beanFactory后处理器，添加bean后处理器，初始化所有单例
         applicationContext.refresh();
+
+        Properties properties = (Properties) applicationContext.getBean("properties");
+        System.err.println(properties.getVersion());
 
         // 销毁
         applicationContext.close();
