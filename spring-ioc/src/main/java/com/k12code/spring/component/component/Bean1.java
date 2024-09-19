@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
  * @author Carl
  * @since 1.0.0
  */
-@Component
 public class Bean1 {
     private static final Logger log = LoggerFactory.getLogger(BeanCom.class);
 
