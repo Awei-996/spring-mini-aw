@@ -1,6 +1,7 @@
 package com.k12code.spring;
 
 import com.k12code.spring.component.BeanScan;
+import com.k12code.spring.component.ComponentBeanFactoryPostProcessor;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -28,7 +29,9 @@ public class BeanFactoryPostProcessor {
     public static void main(String[] args) throws IOException {
 //        t1();
         // @Component 实现过程
-        t2();
+//        t2();
+        // 封装方法
+        t3();
     }
 
     public static void t1() {
@@ -96,6 +99,18 @@ public class BeanFactoryPostProcessor {
 
         for (String beanDefinitionName : applicationContext.getBeanDefinitionNames()) {
             System.err.println("注册的bean:"+beanDefinitionName);
+        }
+
+        applicationContext.close();
+    }
+    public static void t3() throws IOException {
+        GenericApplicationContext applicationContext = new GenericApplicationContext();
+        applicationContext.registerBean(ComponentBeanFactoryPostProcessor.class);
+        applicationContext.registerBean(BeanScan.class);
+        applicationContext.refresh();
+
+        for (String beanDefinitionName : applicationContext.getBeanDefinitionNames()) {
+            System.err.println(beanDefinitionName);
         }
 
         applicationContext.close();
