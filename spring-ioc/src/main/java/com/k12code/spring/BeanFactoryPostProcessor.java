@@ -3,22 +3,28 @@ package com.k12code.spring;
 import com.k12code.spring.component.BeanScan;
 import com.k12code.spring.component.ComponentBeanFactoryPostProcessor;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.annotation.AnnotationBeanNameGenerator;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScans;
 import org.springframework.context.annotation.ConfigurationClassPostProcessor;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.type.AnnotationMetadata;
+import org.springframework.core.type.MethodMetadata;
 import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Set;
+
 
 /**
  * @author Carl
@@ -31,7 +37,9 @@ public class BeanFactoryPostProcessor {
         // @Component 实现过程
 //        t2();
         // 封装方法
-        t3();
+//        t3();
+        // @Bean 实现过程
+        t4();
     }
 
     public static void t1() {
@@ -107,6 +115,35 @@ public class BeanFactoryPostProcessor {
         GenericApplicationContext applicationContext = new GenericApplicationContext();
         applicationContext.registerBean(ComponentBeanFactoryPostProcessor.class);
         applicationContext.registerBean(BeanScan.class);
+        applicationContext.refresh();
+
+        for (String beanDefinitionName : applicationContext.getBeanDefinitionNames()) {
+            System.err.println(beanDefinitionName);
+        }
+
+        applicationContext.close();
+    }
+
+    public static void t4() throws IOException {
+        GenericApplicationContext applicationContext = new GenericApplicationContext();
+
+        applicationContext.registerBean(BeanScan.class);
+
+        CachingMetadataReaderFactory cachingMetadataReaderFactory = new CachingMetadataReaderFactory();
+        // 获取这个类的元数据
+        MetadataReader metadataReader = cachingMetadataReaderFactory.getMetadataReader(new ClassPathResource("com/k12code/spring/component/BeanScan.class"));
+        // 获取这个类中所有@Bean注解的方法
+        Set<MethodMetadata> annotatedMethods = metadataReader.getAnnotationMetadata().getAnnotatedMethods(Bean.class.getName());
+        for (MethodMetadata annotatedMethod : annotatedMethods) {
+            System.err.println("method:"+annotatedMethod);
+            BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition();
+            // 对于构造方法、bean方法中的参数，我需要这是它的装配模式，这里选择的是自动装配AUTOWIRE_CONSTRUCTOR
+            beanDefinitionBuilder.setAutowireMode(AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR);
+            // 使用这种工厂方法依赖bean来注入方法的beanDefinition
+            beanDefinitionBuilder.setFactoryMethodOnBean(annotatedMethod.getMethodName(),BeanScan.class.getName());
+            // 注册beanDefinition
+            applicationContext.getDefaultListableBeanFactory().registerBeanDefinition(annotatedMethod.getMethodName(),beanDefinitionBuilder.getBeanDefinition());
+        }
         applicationContext.refresh();
 
         for (String beanDefinitionName : applicationContext.getBeanDefinitionNames()) {
