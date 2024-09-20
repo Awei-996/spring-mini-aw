@@ -21,8 +21,10 @@ import org.springframework.core.type.MethodMetadata;
 import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Set;
 
 
@@ -137,6 +139,11 @@ public class BeanFactoryPostProcessor {
         for (MethodMetadata annotatedMethod : annotatedMethods) {
             System.err.println("method:"+annotatedMethod);
             BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition();
+            // 获取注解上属性的方法
+            String initMethod = Objects.requireNonNull(annotatedMethod.getAnnotationAttributes(Bean.class.getName())).get("initMethod").toString();
+            if (StringUtils.hasText(initMethod)) {
+                beanDefinitionBuilder.setInitMethodName(initMethod);
+            }
             // 对于构造方法、bean方法中的参数，我需要这是它的装配模式，这里选择的是自动装配AUTOWIRE_CONSTRUCTOR
             beanDefinitionBuilder.setAutowireMode(AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR);
             // 使用这种工厂方法依赖bean来注入方法的beanDefinition
